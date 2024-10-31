@@ -2,11 +2,17 @@
 
 import React, { useState, useEffect } from 'react';
 import { Bars3Icon, XMarkIcon, ChevronDownIcon , CalendarIcon  } from '@heroicons/react/24/outline';
+import Image from 'next/image';
 
 const LingerieBrandSite = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isVisible, setIsVisible] = useState({
+    hero: false,
+    banner1: false,
+    banner2: false
+  });
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -14,9 +20,30 @@ const LingerieBrandSite = () => {
     }, 5000);
     return () => clearInterval(timer);
   }, []);
-  
- 
-  
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + window.innerHeight;
+      
+      // 각 섹션의 위치 체크
+      const banner1 = document.getElementById('banner1');
+      const banner2 = document.getElementById('banner2');
+      
+      if (banner1 && scrollPosition > banner1.offsetTop + 100) {
+        setIsVisible(prev => ({ ...prev, banner1: true }));
+      }
+      
+      if (banner2 && scrollPosition > banner2.offsetTop + 100) {
+        setIsVisible(prev => ({ ...prev, banner2: true }));
+      }
+    };
+
+    // 초기 hero 섹션 애니메이션
+    setIsVisible(prev => ({ ...prev, hero: true }));
+    
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const heroSlides = [
     {
@@ -63,18 +90,14 @@ const LingerieBrandSite = () => {
     }
   ];
 
-
-
- // 모바일 메뉴 닫기 함수
-
+  // 모바일 메뉴 닫기 함수
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-rose-50 via-white to-rose-50" >
 
     {/* 메인 컨텐츠 */}
-    <main className="pt-20">
-      {/* 히어로 섹션 */}
-      <section className="h-96 relative overflow-hidden">
+    <main className="w-full overflow-hidden">
+    <section className="h-96 relative overflow-hidden">
         {heroSlides.map((slide, index) => (
           <div
             key={index}
@@ -120,7 +143,6 @@ const LingerieBrandSite = () => {
           ))}
         </div>
       </section>
-
       {/* 뉴스 섹션 */}
       <section className="py-20 relative">
           {/* 럭셔리한 배경 패턴 */}
@@ -214,6 +236,94 @@ const LingerieBrandSite = () => {
             </div>
           </div>
         </section>
+
+      {/* 배너 섹션 1 */}
+      <section 
+        id="banner1"
+        className="w-full py-20 bg-rose-50"
+      >
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row items-center gap-12">
+            {/* 이미지 */}
+            <div className={`
+              w-full md:w-1/2
+              transition-all duration-1000 ease-out delay-300
+              ${isVisible.banner1 ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-[50%]'}
+            `}>
+              <div className="relative h-[500px] rounded-2xl overflow-hidden shadow-2xl">
+                <Image
+                  src="/images/banner1.jpg"
+                  alt="Luxury Interior"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            </div>
+            
+            {/* 텍스트 */}
+            <div className={`
+              w-full md:w-1/2 text-center md:text-left
+              transition-all duration-1000 ease-out delay-500
+              ${isVisible.banner1 ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-[50%]'}
+            `}>
+              <h2 className="text-4xl md:text-5xl font-serif text-rose-900 mb-6">
+                Elegant Living Spaces
+              </h2>
+              <p className="text-xl text-rose-700 mb-8 leading-relaxed">
+                Experience the perfect blend of luxury and comfort in our carefully curated living spaces. 
+                Each detail is thoughtfully designed to create an atmosphere of sophistication.
+              </p>
+              <button className="bg-rose-900 text-white px-8 py-3 rounded-full hover:bg-rose-800 transition-colors">
+                Discover More
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 배너 섹션 2 (반대 방향) */}
+      <section 
+        id="banner2"
+        className="w-full py-20 bg-white"
+      >
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row-reverse items-center gap-12">
+            {/* 이미지 */}
+            <div className={`
+              w-full md:w-1/2
+              transition-all duration-1000 ease-out delay-300
+              ${isVisible.banner2 ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-[50%]'}
+            `}>
+              <div className="relative h-[500px] rounded-2xl overflow-hidden shadow-2xl">
+                <Image
+                  src="/images/banner2.jpg"
+                  alt="Modern Design"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            </div>
+            
+            {/* 텍스트 */}
+            <div className={`
+              w-full md:w-1/2 text-center md:text-left
+              transition-all duration-1000 ease-out delay-500
+              ${isVisible.banner2 ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-[50%]'}
+            `}>
+              <h2 className="text-4xl md:text-5xl font-serif text-rose-900 mb-6">
+                Modern Aesthetics
+              </h2>
+              <p className="text-xl text-rose-700 mb-8 leading-relaxed">
+                Discover contemporary design solutions that blend functionality with style. 
+                Our modern aesthetics create spaces that inspire and delight.
+              </p>
+              <button className="bg-rose-900 text-white px-8 py-3 rounded-full hover:bg-rose-800 transition-colors">
+                Learn More
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
 
    
